@@ -9,7 +9,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get('/books/{isbn}')
+@app.get("/books/{isbn}")
 def get_by_isbn(isbn):
     book = BooksService().get(isbn)
-    return {'result': book}
+    return {"result": book}
