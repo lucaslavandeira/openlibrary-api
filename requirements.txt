@@ -1,2 +1,5 @@
 fastapi==0.91.0
 uvicorn[standard]==0.20.0
+pytest
+httpx
+black
