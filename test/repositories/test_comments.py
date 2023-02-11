@@ -42,3 +42,22 @@ def test_create_comments_for_multiple_books(book, other_book, comment_repository
 
     assert len(comment_repository.get_all_for_book(book)) == 1
     assert len(comment_repository.get_all_for_book(other_book)) == 1
+
+
+def test_update_comment(book, comment_repository):
+    comment = Comment(book=book.id, content="This is my test comment")
+    comment_repository.add(comment)
+
+    comment_repository.update_content(comment.id, "Updated content")
+
+    comment = comment_repository.get(comment.id)
+    assert comment.content == "Updated content"
+
+
+def test_delete_comment(book, comment_repository):
+    comment = Comment(book=book.id, content="This is my test comment")
+    comment_repository.add(comment)
+    assert len(comment_repository.get_all_for_book(book)) == 1
+
+    comment_repository.delete(comment)
+    assert len(comment_repository.get_all_for_book(book)) == 0

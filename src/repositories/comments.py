@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey, select
+from sqlalchemy import Column, Integer, Text, ForeignKey, delete, select, update
 from sqlalchemy.orm import Session
 
 from src.repositories.database import Base, SessionFactory
@@ -32,13 +32,16 @@ class CommentRepository:
         session = self.session_factory.get()
         return session.get(Comment, comment_id)
 
-    def update(self):
+    def update_content(self, comment_id, new_content):
         session = self.session_factory.get()
+        session.execute(
+            update(Comment).where(Comment.id == comment_id).values(content=new_content)
+        )
         session.commit()
 
-    def delete(self, book):
+    def delete(self, comment):
         session = self.session_factory.get()
-        session.delete(book)
+        session.execute(delete(Comment).where(Comment.id == comment.id))
         session.commit()
 
     def get_all_for_book(self, book):
