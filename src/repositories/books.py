@@ -1,6 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, select
 
 from src.repositories.database import Base
 
@@ -22,7 +20,7 @@ class BookRepository:
         self.session.commit()
 
     def get(self, book_id):
-        return self.session.query(Book).get(book_id)
+        return self.session.get(Book, book_id)
 
     def update(self, book):
         self.session.commit()
@@ -30,3 +28,6 @@ class BookRepository:
     def delete(self, book):
         self.session.delete(book)
         self.session.commit()
+
+    def get_all(self):
+        return self.session.execute(select(Book)).all()
