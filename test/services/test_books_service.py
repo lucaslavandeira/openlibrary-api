@@ -28,6 +28,6 @@ def test_404(books_service):
 def test_persist(books_service: BooksService, isbn, book_repository):
     book = books_service.save(isbn)
 
-    book_from_database = book_repository.get(book_id=book.id)
+    book_from_database = book_repository.get(book_id=book["id"])
 
-    assert book.isbn == book_from_database.isbn
+    assert book["isbn"] == book_from_database.isbn

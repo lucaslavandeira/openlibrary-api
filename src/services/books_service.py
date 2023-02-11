@@ -25,8 +25,10 @@ class BooksService:
 
     def save(self, isbn):
         book = self.get(isbn)
-        self.repository.add(book)
-        return book
+        book_response = book.to_dict()
+        book_id = self.repository.add(book)
+        book_response["id"] = book_id
+        return book_response
 
 
 class BookNotFoundError(ValueError):

@@ -10,6 +10,14 @@ class Book(Base):
     author = Column(String)
     isbn = Column(String)
 
+    def to_dict(self):
+        return {
+            "isbn": self.isbn,
+            "author": self.author,
+            "id": self.id,
+            "title": self.title,
+        }
+
 
 class BookRepository:
     def __init__(self, session):
@@ -18,6 +26,7 @@ class BookRepository:
     def add(self, book):
         self.session.add(book)
         self.session.commit()
+        return book.id
 
     def get(self, book_id):
         return self.session.get(Book, book_id)

@@ -18,4 +18,4 @@ def book_repository():
 
 @fixture
 def isbn():
-    return 9780140328721
+    return "9780140328721"
