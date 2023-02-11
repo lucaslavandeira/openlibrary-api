@@ -1,5 +1,4 @@
 import pytest
-import sqlalchemy as db
 from src.repositories.database import SessionFactory
 from src.repositories.books import Book
 

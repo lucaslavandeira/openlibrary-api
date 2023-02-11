@@ -37,4 +37,3 @@ class BookRepository:
     def get_all(self):
         session = self.session_factory.get()
         return session.execute(select(Book)).all()
-
