@@ -5,3 +5,4 @@ httpx
 black
 requests
 sqlalchemy
+psycopg2-binary

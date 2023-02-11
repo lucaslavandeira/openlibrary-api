@@ -10,14 +10,19 @@ class Session:
 
     @classmethod
     def get(cls):
-        if cls.singleton is not None:
-            return cls.singleton
-        engine = create_engine(
-            "postgresql://postgres:postgres@localhost/openlibraryapi"
-        )
+        if cls.singleton is None:
+            cls.init()
+        return cls.singleton
+
+    @classmethod
+    def init(cls):
+        engine = create_engine("postgresql://postgres:postgres@localhost/postgres")
         Base.metadata.create_all(engine)
 
         # Start a session to interact with the database
         Session = sessionmaker(bind=engine)
         cls.singleton = Session()
-        return cls.singleton
+
+    @classmethod
+    def close(cls):
+        cls.singleton.close()
