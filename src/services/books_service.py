@@ -7,10 +7,8 @@ from ..repositories.database import SessionFactory
 class BooksService:
     endpoint = "https://openlibrary.org/"
 
-    def __init__(self, session=None) -> None:
-        if session is None:
-            session = SessionFactory().get()
-        self.repository = BookRepository(session)
+    def __init__(self) -> None:
+        self.repository = BookRepository()
 
     def get(self, isbn):
         url = f"{self.endpoint}/isbn/{isbn}.json"

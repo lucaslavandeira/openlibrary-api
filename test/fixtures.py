@@ -13,7 +13,7 @@ def test_client():
 
 @fixture()
 def book_repository():
-    yield BookRepository(session=SessionFactory().get())
+    yield BookRepository()
 
 
 @fixture
