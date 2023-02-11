@@ -1,7 +1,19 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, Request
 from src.services.books_service import BookNotFoundError, BooksService
 
 router = APIRouter()
+
+
+@router.get("/search")
+def search(request: Request, response: Response):
+    query_params = request.query_params
+    try:
+        search_results = BooksService().search(query_params)
+    except Exception:
+        response.status_code = 503
+        return {"status": "API Error. Try again at a later date"}
+
+    return search_results
 
 
 @router.get("/{isbn}")

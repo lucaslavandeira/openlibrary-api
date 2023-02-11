@@ -5,7 +5,7 @@ from ..repositories.database import SessionFactory
 
 
 class BooksService:
-    endpoint = "https://openlibrary.org/isbn/"
+    endpoint = "https://openlibrary.org/"
 
     def __init__(self, session=None) -> None:
         if session is None:
@@ -13,7 +13,7 @@ class BooksService:
         self.repository = BookRepository(session)
 
     def get(self, isbn):
-        url = f"{self.endpoint}/{isbn}.json"
+        url = f"{self.endpoint}/isbn/{isbn}.json"
         response = requests.get(url)
         if response.status_code == 404:
             raise BookNotFoundError
@@ -29,6 +29,14 @@ class BooksService:
         book_id = self.repository.add(book)
         book_response["id"] = book_id
         return book_response
+
+    def search(self, params):
+        query_params = dict(params)
+        query_params["format"] = "json"
+        response = requests.get(f"{self.endpoint}/api/books", params=query_params)
+        if response.status_code != 200:
+            raise RuntimeError
+        return {"result": response.json()}
 
 
 class BookNotFoundError(ValueError):

@@ -1,5 +1,5 @@
 from pytest import fixture
-
+from unittest import mock
 from src.services.books_service import BookNotFoundError, BooksService
 
 
@@ -31,3 +31,36 @@ def test_persist(books_service: BooksService, isbn, book_repository):
     book_from_database = book_repository.get(book_id=book["id"])
 
     assert book["isbn"] == book_from_database.isbn
+
+
+def test_search_returns_the_api_response_directly(books_service, isbn):
+    with mock.patch("src.services.books_service.requests.get") as patched_get:
+        mock_response = mock.MagicMock(status_code=200)
+        patched_get.return_value = mock_response
+        search_result = books_service.search({"isbn": isbn})
+        assert search_result["result"] == mock_response.json()
+
+
+def test_search_passes_on_the_params_as_request_query_params_and_json_format(
+    books_service, isbn
+):
+    with mock.patch("src.services.books_service.requests.get") as patched_get:
+        mock_response = mock.MagicMock(status_code=200)
+        patched_get.return_value = mock_response
+        books_service.search({"isbn": isbn})
+        patched_get.assert_called_once_with(
+            mock.ANY, params={"isbn": isbn, "format": "json"}
+        )
+
+
+def test_search_unavailable(books_service, isbn):
+    exception_thrown = False
+    with mock.patch("src.services.books_service.requests.get") as patched_get:
+        mock_response = mock.MagicMock(status_code=400)
+        patched_get.return_value = mock_response
+        try:
+            books_service.search({"isbn": isbn})
+        except Exception:
+            exception_thrown = True
+
+    assert exception_thrown
