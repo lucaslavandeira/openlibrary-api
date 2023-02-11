@@ -2,13 +2,11 @@ from pytest import fixture
 
 from src.services.books_service import BookNotFoundError, BooksService
 
+
 @fixture
 def books_service():
     yield BooksService()
 
-@fixture
-def isbn():
-    return 9780140328721
 
 def test_get_ok(books_service: BooksService, isbn):
     response = books_service.get(isbn)

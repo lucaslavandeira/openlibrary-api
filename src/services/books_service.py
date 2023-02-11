@@ -18,7 +18,9 @@ class BooksService:
         if response.status_code == 404:
             raise BookNotFoundError
         book_data = response.json()
-        book = Book(isbn=isbn, title=book_data["title"], author=book_data["authors"][0]['key'])
+        book = Book(
+            isbn=isbn, title=book_data["title"], author=book_data["authors"][0]["key"]
+        )
         return book
 
     def save(self, isbn):
