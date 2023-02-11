@@ -16,11 +16,16 @@ class BooksService:
         url = f"{self.endpoint}/{isbn}.json"
         response = requests.get(url)
         if response.status_code == 404:
-            return {"status": "not found"}
-        return response.json()
+            raise BookNotFoundError
+        book_data = response.json()
+        book = Book(isbn=isbn, title=book_data["title"], author=book_data["authors"][0]['key'])
+        return book
 
     def save(self, isbn):
-        book_data = self.get(isbn)
-        book = Book(title=book_data["title"], author=book_data["author"], isbn=isbn)
+        book = self.get(isbn)
         self.repository.add(book)
         return book
+
+
+class BookNotFoundError(ValueError):
+    pass

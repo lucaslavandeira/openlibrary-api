@@ -17,11 +17,6 @@ def db_session(request):
     return session
 
 
-@pytest.fixture()
-def book_repository():
-    yield BookRepository(session=SessionFactory().get())
-
-
 def test_example(book_repository):
     book = Book(isbn=123)
     book_repository.add(book)

@@ -8,7 +8,7 @@ class Book(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     author = Column(String)
-    isbn = Column(Integer)
+    isbn = Column(String)
 
 
 class BookRepository:
