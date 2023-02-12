@@ -15,3 +15,6 @@ class CommentsService:
             raise BookNotFoundError
         comment = Comment(book=book.id, content=content, created_at=datetime.now())
         return self.comment_repository.add(comment)
+
+    def update(self, comment_id, new_content):
+        self.comment_repository.update_content(comment_id, new_content)

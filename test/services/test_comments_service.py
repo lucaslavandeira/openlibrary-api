@@ -9,6 +9,11 @@ def comments_service():
     yield CommentsService()
 
 
+@fixture
+def comment_id(book, comments_service):
+    yield comments_service.add(book.id, "Test comment")
+
+
 def test_add_comment(book, comments_service, comment_repository):
     comments_service.add(book.id, "Test comment")
 
@@ -31,3 +36,10 @@ def test_add_multiple_comments(book, comments_service, comment_repository):
     comments_service.add(book.id, "Test comment 3")
 
     assert len(comment_repository.get_all_for_book(book)) == 3
+
+
+def test_update_comment(comment_id, comments_service, comment_repository):
+    comments_service.update(comment_id, "Updated comment")
+
+    comment = comment_repository.get(comment_id)
+    assert comment.content == "Updated comment"
