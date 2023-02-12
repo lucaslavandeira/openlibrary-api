@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey, delete, select, update
+from sqlalchemy import (
+    Column,
+    Integer,
+    Text,
+    ForeignKey,
+    DateTime,
+    delete,
+    select,
+    update,
+)
 from sqlalchemy.orm import Session
 
 from src.repositories.database import Base, SessionFactory
@@ -9,6 +18,7 @@ class Comment(Base):
     id = Column(Integer, primary_key=True)
     book = Column(Integer, ForeignKey("books.id"))
     content = Column(Text)
+    created_at = Column(DateTime)
 
     def to_dict(self):
         return {

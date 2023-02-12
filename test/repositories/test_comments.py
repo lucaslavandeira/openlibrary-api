@@ -5,13 +5,6 @@ from src.repositories.comments import Comment
 
 
 @fixture
-def book(isbn, book_repository: BookRepository):
-    book = Book(author="Test author", title="Test title", isbn=isbn)
-    book_repository.add(book)
-    yield book
-
-
-@fixture
 def other_book(isbn, book_repository: BookRepository):
     book = Book(author="Test author 2", title="Test title 2", isbn=isbn)
     book_repository.add(book)
