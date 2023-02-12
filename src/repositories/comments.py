@@ -44,10 +44,11 @@ class CommentRepository:
 
     def update_content(self, comment_id, new_content):
         session = self.session_factory.get()
-        session.execute(
+        result = session.execute(
             update(Comment).where(Comment.id == comment_id).values(content=new_content)
         )
         session.commit()
+        return result.rowcount
 
     def delete(self, comment):
         session = self.session_factory.get()

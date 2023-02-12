@@ -1,7 +1,7 @@
 from pytest import fixture
 from src.services.books_service import BookNotFoundError
 
-from src.services.comments_service import CommentsService
+from src.services.comments_service import CommentNotFoundError, CommentsService
 
 
 @fixture
@@ -43,3 +43,13 @@ def test_update_comment(comment_id, comments_service, comment_repository):
 
     comment = comment_repository.get(comment_id)
     assert comment.content == "Updated comment"
+
+
+def test_update_non_existing_comment(comments_service):
+    exception_thrown = False
+    try:
+        comments_service.update(0, "Updated comment")
+    except CommentNotFoundError:
+        exception_thrown = True
+
+    assert exception_thrown

@@ -17,4 +17,10 @@ class CommentsService:
         return self.comment_repository.add(comment)
 
     def update(self, comment_id, new_content):
-        self.comment_repository.update_content(comment_id, new_content)
+        count = self.comment_repository.update_content(comment_id, new_content)
+        if not count:
+            raise CommentNotFoundError
+
+
+class CommentNotFoundError(ValueError):
+    pass
