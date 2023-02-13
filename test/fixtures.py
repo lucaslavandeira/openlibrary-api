@@ -1,7 +1,9 @@
+from unittest import mock
 from pytest import fixture
 from fastapi.testclient import TestClient
 
 from src.app import app
+from src.providers.openlibrary_provider import OpenLibraryProvider
 from src.repositories.books import Book, BookRepository
 from src.repositories.comments import CommentRepository
 from src.repositories.database import SessionFactory
@@ -56,3 +58,11 @@ def db_session(request):
     request.addfinalizer(teardown)
 
     return session
+
+@fixture()
+def mock_provider():
+    with mock.patch(
+        "src.services.books_service.OpenLibraryProvider",
+        return_value=mock.MagicMock(OpenLibraryProvider),
+    ) as m:
+        yield m()

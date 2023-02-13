@@ -1,18 +1,6 @@
-from unittest import mock
-from pytest import fixture
 from src.errors import BookNotFoundError
 
-from src.providers.openlibrary_provider import OpenLibraryProvider
 from src.repositories.books import Book
-
-
-@fixture()
-def mock_provider():
-    with mock.patch(
-        "src.services.books_service.OpenLibraryProvider",
-        return_value=mock.MagicMock(OpenLibraryProvider),
-    ) as m:
-        yield m()
 
 
 def test_get_book(test_client, isbn, mock_provider):
