@@ -54,3 +54,8 @@ def test_list_comments_for_non_existing_book(test_client):
     invalid_book_id = 0
     comments = test_client.get(f"/books/{invalid_book_id}/comments")
     assert comments.status_code == 404
+
+
+def test_list_comments_of_book_with_no_comments(test_client, book):
+    comments = test_client.get(f"/books/{book.id}/comments?offset=1").json()
+    assert len(comments) == 0
