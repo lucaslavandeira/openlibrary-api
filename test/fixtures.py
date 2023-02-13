@@ -59,6 +59,7 @@ def db_session(request):
 
     return session
 
+
 @fixture()
 def mock_provider():
     with mock.patch(

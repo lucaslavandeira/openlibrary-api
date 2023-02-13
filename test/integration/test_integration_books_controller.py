@@ -15,3 +15,11 @@ def test_post_book(test_client, book_repository, isbn):
     body = response.json()
     book_from_database = book_repository.get(book_id=body["id"])
     assert book_from_database.isbn == body["isbn"]
+
+
+def test_search(test_client, isbn):
+    # API reference: https://openlibrary.org/dev/docs/api/books
+    response = test_client.get(f"/books/search?bibkeys=ISBN:{isbn}")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["result"]
