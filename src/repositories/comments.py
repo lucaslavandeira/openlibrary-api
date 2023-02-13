@@ -25,7 +25,7 @@ class Comment(Base):
             "id": self.id,
             "book": self.book,
             "content": self.content,
-            "created_at": str(self.created_at),
+            "created_at": self.created_at.isoformat(),
         }
 
 
