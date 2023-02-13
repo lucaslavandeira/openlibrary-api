@@ -1,3 +1,10 @@
+import os
+import pytest
+
+
+pytestmark = pytest.mark.skipif(os.getenv("INTEGRATION_TEST") is None, reason="INTEGRATION_TEST environment variable not set")
+
+
 def test_get_book(test_client, isbn):
     response = test_client.get(f"/books/{isbn}")
     assert response.status_code == 200
