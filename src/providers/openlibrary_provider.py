@@ -15,9 +15,12 @@ class OpenLibraryProvider:
         if response.status_code == 404:
             raise BookNotFoundError
         book_data = response.json()
-        return Book(
-            isbn=isbn, title=book_data["title"], author=book_data["authors"][0]["key"]
-        )
+        authors = book_data.get("authors", [])
+        if not authors:
+            author = None
+        else:
+            author = authors[0].get("key")
+        return Book(isbn=isbn, title=book_data.get("title"), author=author)
 
     def search_books(self, query) -> dict:
         query_params = dict(query)
