@@ -41,6 +41,7 @@ class CommentsService:
             raise CommentNotFoundError
 
     def list_for_book(self, book_id, offset=0, limit=config.PAGINATION_DEFAULT_LIMIT):
+        # Maybe these offset and limit should be validated, but pragmatically FastAPI does it for us at the controller level automatically.
         book = self.book_repository.get(book_id)
         if book is None:
             raise BookNotFoundError
