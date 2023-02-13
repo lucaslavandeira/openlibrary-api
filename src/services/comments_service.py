@@ -16,12 +16,9 @@ class CommentsService:
         created_at = datetime.now()
         comment = Comment(book=book.id, content=content, created_at=created_at)
         comment_id = self.comment_repository.add(comment)
-        return {
-            "id": comment_id,
-            "content": content,
-            "book_id": book_id,
-            "created_id": created_at,
-        }
+        response = comment.to_dict()
+        response["id"] = comment_id
+        return response
 
     def update(self, comment_id, new_content):
         count = self.comment_repository.update_content(comment_id, new_content)
@@ -39,14 +36,7 @@ class CommentsService:
             raise BookNotFoundError
 
         comments = self.comment_repository.list_for_book(book, offset, limit)
-        return [
-            {
-                "id": comment.id,
-                "content": comment.content,
-                "created_at": comment.created_at,
-            }
-            for comment in comments
-        ]
+        return [comment.to_dict() for comment in comments]
 
 
 class CommentNotFoundError(ValueError):
