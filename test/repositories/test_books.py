@@ -1,19 +1,4 @@
-import pytest
-from src.repositories.database import SessionFactory
 from src.repositories.books import Book
-
-
-@pytest.fixture(scope="function", autouse=True)
-def db_session(request):
-    session = SessionFactory().get()
-    transaction = session.begin()
-
-    def teardown():
-        transaction.rollback()
-
-    request.addfinalizer(teardown)
-
-    return session
 
 
 def test_example(book_repository):

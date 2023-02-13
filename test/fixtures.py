@@ -43,3 +43,16 @@ def comments_service():
 @fixture
 def comment(book, comments_service):
     yield comments_service.add(book.id, "Test comment")
+
+
+@fixture(scope="function", autouse=True)
+def db_session(request):
+    session = SessionFactory().get()
+    transaction = session.begin()
+
+    def teardown():
+        transaction.rollback()
+
+    request.addfinalizer(teardown)
+
+    return session
