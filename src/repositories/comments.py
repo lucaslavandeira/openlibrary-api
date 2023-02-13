@@ -60,3 +60,14 @@ class CommentRepository:
         session = self.session_factory.get()
         results = session.execute(select(Comment).where(Comment.book == book.id)).all()
         return [x[0] for x in results]
+
+    def list_for_book(self, book, offset=0, limit=10):
+        session = self.session_factory.get()
+        results = session.execute(
+            select(Comment)
+            .where(Comment.book == book.id)
+            .order_by(Comment.created_at)
+            .limit(limit)
+            .offset(offset)
+        )
+        return [x[0] for x in results]
