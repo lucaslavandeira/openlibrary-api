@@ -10,6 +10,7 @@ from sqlalchemy import (
 )
 
 from src.repositories.database import Base, SessionFactory
+from iso8601 import iso8601
 
 
 class Comment(Base):
@@ -24,7 +25,7 @@ class Comment(Base):
             "id": self.id,
             "book": self.book,
             "content": self.content,
-            "created_at": self.created_at,
+            "created_at": str(self.created_at),
         }
 
 

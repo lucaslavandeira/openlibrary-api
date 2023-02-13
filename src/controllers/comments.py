@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Response, Request
+import datetime
+from fastapi import APIRouter, HTTPException, Response, Request
 from src.services.comments_service import (
     BookNotFoundError,
     CommentsService,
@@ -15,11 +16,17 @@ class Comment(BaseModel):
     content: str
 
 
-@router.post("/", status_code=201)
+class CommentResponse(BaseModel):
+    book: int
+    id: int
+    content: str
+    created_at: str
+
+
+@router.post("/", status_code=201, response_model=CommentResponse)
 def add_comment(book_id: int, comment: Comment, response: Response):
     if not comment:
-        response.status_code = 400
-        return {"error": "Content not supplied"}
+        raise HTTPException(status_code=404, detail="Comment not found")
     return CommentsService().add(book_id, comment.content)
 
 
@@ -28,18 +35,16 @@ def get_comments(book_id, response: Response, offset: int = 0, limit: int = 10):
     try:
         return CommentsService().list_for_book(book_id, offset, limit)
     except BookNotFoundError:
-        response.status_code = 404
-        return {"error": "Book not found"}
+        raise HTTPException(status_code=404, detail="Book not found")
 
 
-@router.get("/{comment_id}")
-def get(book_id: int, comment_id: int, response: Response):
+@router.get("/{comment_id}", response_model=CommentResponse)
+def get_comment(book_id: int, comment_id: int, response: Response):
     comment = CommentsService().get(book_id, comment_id)
     if comment is None:
-        response.status_code = 404
-        return {"error": "Comment not found"}
+        raise HTTPException(status_code=404, detail="Comment not found")
 
-    return comment
+    return comment.to_dict()
 
 
 @router.patch("/{comment_id}")
@@ -47,20 +52,16 @@ def edit_comment(book_id: int, comment_id: int, comment: Comment, response: Resp
     try:
         return CommentsService().update(book_id, comment_id, comment.content)
     except BookNotFoundError:
-        response.status_code = 404
-        return {"error": "Book not found"}
+        raise HTTPException(status_code=404, detail="Book not found")
     except CommentNotFoundError:
-        response.status_code = 404
-        return {"error": "Book not found"}
+        raise HTTPException(status_code=404, detail="Comment not found")
 
 
 @router.delete("/{comment_id}", status_code=204)
-def delete(book_id: int, comment_id: int, response: Response):
+def delete_comment(book_id: int, comment_id: int, response: Response):
     try:
         return CommentsService().delete(book_id, comment_id)
     except BookNotFoundError:
-        response.status_code = 404
-        return {"error": "Book not found"}
+        raise HTTPException(status_code=404, detail="Book not found")
     except CommentNotFoundError:
-        response.status_code = 404
-        return {"error": "Comment not found"}
+        raise HTTPException(status_code=404, detail="Comment not found")

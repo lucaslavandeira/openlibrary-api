@@ -1,36 +1,44 @@
-from fastapi import APIRouter, Response, Request
+from typing import Union
+from fastapi import APIRouter, HTTPException, Response, Request
+from pydantic import BaseModel
 from src.services.books_service import BookNotFoundError, BooksService
 
 router = APIRouter()
 
 
+class Book(BaseModel):
+    author: str
+    title: str
+    isbn: str
+    id: Union[None, int]
+
+
 @router.get("/search")
-def search(request: Request, response: Response):
+def search(request: Request):
     query_params = request.query_params
     try:
         search_results = BooksService().search(query_params)
     except Exception:
-        response.status_code = 503
-        return {"status": "API Error. Try again at a later date"}
+        raise HTTPException(
+            status_code=503, detail="API Error. Try again at a later date."
+        )
 
     return search_results
 
 
-@router.get("/{isbn}")
-def get_by_isbn(isbn: str, response: Response):
+@router.get("/{isbn}", response_model=Book)
+def get_by_isbn(isbn: str):
     try:
         book = BooksService().get(isbn)
     except BookNotFoundError:
-        response.status_code = 404
-        return {"status": "Book with isbn {isbn} not found."}
+        raise HTTPException(status_code=404, detail="Book not found")
     return book.to_dict()
 
 
-@router.post("/{isbn}", status_code=201)
-def save_by_isbn(isbn: str, response: Response):
+@router.post("/{isbn}", status_code=201, response_model=Book)
+def save_by_isbn(isbn: str):
     try:
         book = BooksService().save(isbn)
     except BookNotFoundError:
-        response.status_code = 404
-        return {"status": "Book with isbn {isbn} not found."}
+        raise HTTPException(status_code=404, detail="Book not found")
     return book
