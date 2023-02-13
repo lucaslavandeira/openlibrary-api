@@ -55,3 +55,10 @@ def test_list_comments_for_non_existing_book(test_client):
 def test_list_comments_of_book_with_no_comments(test_client, book):
     comments = test_client.get(f"/books/{book.id}/comments?offset=1").json()
     assert len(comments) == 0
+
+
+def test_edit_comment(test_client, book, comment):
+    response = test_client.patch(f"/books/{book.id}/comments/{comment['id']}", json={"content": "Test content 2"})
+    assert response.status_code == 200
+    updated_comment = test_client.get(f"/books/{book.id}/comments/{comment['id']}").json()
+    assert updated_comment['content'] == 'Test content 2'
