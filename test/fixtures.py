@@ -5,6 +5,7 @@ from src.app import app
 from src.repositories.books import Book, BookRepository
 from src.repositories.comments import CommentRepository
 from src.repositories.database import SessionFactory
+from src.services.comments_service import CommentsService
 
 
 @fixture
@@ -32,3 +33,13 @@ def book(isbn, book_repository: BookRepository):
     book = Book(author="Test author", title="Test title", isbn=isbn)
     book_repository.add(book)
     yield book
+
+
+@fixture
+def comments_service():
+    yield CommentsService()
+
+
+@fixture
+def comment_id(book, comments_service):
+    yield comments_service.add(book.id, "Test comment")["id"]

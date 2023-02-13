@@ -4,16 +4,6 @@ from src.services.books_service import BookNotFoundError
 from src.services.comments_service import CommentNotFoundError, CommentsService
 
 
-@fixture
-def comments_service():
-    yield CommentsService()
-
-
-@fixture
-def comment_id(book, comments_service):
-    yield comments_service.add(book.id, "Test comment")["id"]
-
-
 def test_add_comment(book, comments_service, comment_repository):
     comments_service.add(book.id, "Test comment")
 

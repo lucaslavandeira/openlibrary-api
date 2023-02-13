@@ -38,6 +38,14 @@ class CommentsService:
         comments = self.comment_repository.list_for_book(book, offset, limit)
         return [comment.to_dict() for comment in comments]
 
+    def get(self, book_id, comment_id):
+        book = self.book_repository.get(book_id)
+        if book is None:
+            raise BookNotFoundError
+
+        comment = self.comment_repository.get(comment_id)
+        return comment
+
 
 class CommentNotFoundError(ValueError):
     pass

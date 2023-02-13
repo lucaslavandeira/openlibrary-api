@@ -27,3 +27,8 @@ def add_comment(book_id: int, comment: Comment, response: Response):
 @router.get("/")
 def get_comments(book_id):
     return CommentsService().list_for_book(book_id)
+
+
+@router.get("/{comment_id}")
+def get(book_id: int, comment_id: int):
+    return CommentsService().get(book_id, comment_id)
