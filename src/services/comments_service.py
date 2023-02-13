@@ -20,7 +20,11 @@ class CommentsService:
         response["id"] = comment_id
         return response
 
-    def update(self, comment_id, new_content):
+    def update(self, book_id, comment_id, new_content):
+        book = self.book_repository.get(book_id)
+        if book is None:
+            raise BookNotFoundError
+
         count = self.comment_repository.update_content(comment_id, new_content)
         if not count:
             raise CommentNotFoundError

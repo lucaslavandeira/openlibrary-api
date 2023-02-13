@@ -41,5 +41,5 @@ def comments_service():
 
 
 @fixture
-def comment_id(book, comments_service):
-    yield comments_service.add(book.id, "Test comment")["id"]
+def comment(book, comments_service):
+    yield comments_service.add(book.id, "Test comment")

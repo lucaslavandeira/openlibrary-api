@@ -11,11 +11,11 @@ def test_post_comment(test_client: TestClient, book):
     assert comments.json()[0] == body
 
 
-def test_get_comment(test_client, book, comment_id):
-    response = test_client.get(f"/books/{book.id}/comments/{comment_id}")
+def test_get_comment(test_client, book, comment):
+    response = test_client.get(f"/books/{book.id}/comments/{comment['id']}")
     assert response.status_code == 200
     body = response.json()
-    assert body["id"] == comment_id
+    assert body["id"] == comment["id"]
 
 
 def test_get_non_existing_comment(test_client, book):
@@ -28,9 +28,7 @@ def test_list_comments_limit(test_client, book):
     first_comment = test_client.post(
         f"/books/{book.id}/comments", json={"content": "Test content 1"}
     ).json()
-    test_client.post(
-        f"/books/{book.id}/comments", json={"content": "Test content 2"}
-    )
+    test_client.post(f"/books/{book.id}/comments", json={"content": "Test content 2"})
 
     comments = test_client.get(f"/books/{book.id}/comments?limit=1").json()
     assert len(comments) == 1
@@ -38,9 +36,7 @@ def test_list_comments_limit(test_client, book):
 
 
 def test_list_comments_offset(test_client, book):
-    test_client.post(
-        f"/books/{book.id}/comments", json={"content": "Test content 1"}
-    )
+    test_client.post(f"/books/{book.id}/comments", json={"content": "Test content 1"})
     second_comment = test_client.post(
         f"/books/{book.id}/comments", json={"content": "Test content 2"}
     ).json()

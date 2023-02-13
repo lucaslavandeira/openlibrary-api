@@ -28,17 +28,17 @@ def test_add_multiple_comments(book, comments_service, comment_repository):
     assert len(comment_repository.get_all_for_book(book)) == 3
 
 
-def test_update_comment(comment_id, comments_service, comment_repository):
-    comments_service.update(comment_id, "Updated comment")
+def test_update_comment(comment, comments_service, comment_repository):
+    comments_service.update(comment["book"], comment["id"], "Updated comment")
 
-    comment = comment_repository.get(comment_id)
+    comment = comment_repository.get(comment["id"])
     assert comment.content == "Updated comment"
 
 
-def test_update_non_existing_comment(comments_service):
+def test_update_non_existing_comment(book, comments_service):
     exception_thrown = False
     try:
-        comments_service.update(0, "Updated comment")
+        comments_service.update(book.id, 0, "Updated comment")
     except CommentNotFoundError:
         exception_thrown = True
 

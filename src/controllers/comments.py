@@ -33,7 +33,6 @@ def get_comments(book_id, response: Response, offset: int = 0, limit: int = 10):
         return {"error": "Book not found"}
 
 
-
 @router.get("/{comment_id}")
 def get(book_id: int, comment_id: int, response: Response):
     comment = CommentsService().get(book_id, comment_id)
@@ -42,3 +41,12 @@ def get(book_id: int, comment_id: int, response: Response):
         return {"error": "Comment not found"}
 
     return comment
+
+
+@router.patch("/{comment_id}")
+def edit_comment(book_id: int, comment_id: int, comment: Comment, response: Response):
+    try:
+        return CommentsService().update(book_id, comment_id, comment.content)
+    except BookNotFoundError:
+        response.status_code = 404
+        return {"error": "Book not found"}
