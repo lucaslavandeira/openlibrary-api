@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from src import config
 from src.services.comments_service import (
     BookNotFoundError,
@@ -32,7 +32,7 @@ def add_comment(book_id: int, comment: Comment):
 
 @router.get("/")
 def get_comments(
-    book_id, offset: int = 0, limit: int = config.PAGINATION_DEFAULT_LIMIT
+    book_id, offset: int = Query(default=0, ge=0), limit: int = Query(default=config.PAGINATION_DEFAULT_LIMIT, ge=0, le=10)
 ):
     try:
         return CommentsService().list_for_book(book_id, offset, limit)
