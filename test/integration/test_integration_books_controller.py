@@ -2,7 +2,10 @@ import os
 import pytest
 
 
-pytestmark = pytest.mark.skipif(os.getenv("INTEGRATION_TEST") is None, reason="INTEGRATION_TEST environment variable not set")
+pytestmark = pytest.mark.skipif(
+    os.getenv("INTEGRATION_TEST") is None,
+    reason="INTEGRATION_TEST environment variable not set",
+)
 
 
 def test_get_book(test_client, isbn):
