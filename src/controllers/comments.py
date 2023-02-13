@@ -25,8 +25,13 @@ def add_comment(book_id: int, comment: Comment, response: Response):
 
 
 @router.get("/")
-def get_comments(book_id):
-    return CommentsService().list_for_book(book_id)
+def get_comments(book_id, response: Response, offset: int = 0, limit: int = 10):
+    try:
+        return CommentsService().list_for_book(book_id, offset, limit)
+    except BookNotFoundError:
+        response.status_code = 404
+        return {"error": "Book not found"}
+
 
 
 @router.get("/{comment_id}")
