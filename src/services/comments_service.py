@@ -26,6 +26,21 @@ class CommentsService:
         if not self.comment_repository.delete(comment):
             raise CommentNotFoundError
 
+    def list_for_book(self, book_id, offset=0, limit=10):
+        book = self.book_repository.get(book_id)
+        if book is None:
+            raise BookNotFoundError
+
+        comments = self.comment_repository.list_for_book(book, offset, limit)
+        return [
+            {
+                "id": comment.id,
+                "content": comment.content,
+                "created_at": comment.created_at,
+            }
+            for comment in comments
+        ]
+
 
 class CommentNotFoundError(ValueError):
     pass
