@@ -28,6 +28,7 @@ def comment_repository():
 
 @fixture
 def isbn():
+    # Valid ISBN example
     return "9780140328721"
 
 
