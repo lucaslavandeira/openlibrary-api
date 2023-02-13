@@ -28,3 +28,12 @@ def test_post_book(test_client, book_repository, isbn, mock_provider):
     body = response.json()
     book_from_database = book_repository.get(book_id=body["id"])
     assert book_from_database.isbn == body["isbn"]
+
+
+def test_search(test_client, isbn, mock_provider):
+    mock_provider.search_books.return_value = {}
+    response = test_client.get(f"/books/search?bibkeys=ISBN:{isbn}")
+    assert response.status_code == 200
+    # For some reason assert_called_once_with did not play well with dictionaries
+    called_query = mock_provider.search_books.call_args[0][0]
+    assert called_query == {"bibkeys": f"ISBN:{isbn}"}

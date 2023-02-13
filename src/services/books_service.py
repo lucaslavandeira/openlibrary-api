@@ -19,5 +19,6 @@ class BooksService:
         return book_response
 
     def search(self, params):
-        response = self.provider.search_books(params)
+        query = dict(params)
+        response = self.provider.search_books(query)
         return {"result": response}

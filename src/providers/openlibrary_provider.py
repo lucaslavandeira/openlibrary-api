@@ -22,10 +22,10 @@ class OpenLibraryProvider:
             author = authors[0].get("key")
         return Book(isbn=isbn, title=book_data.get("title"), author=author)
 
-    def search_books(self, query) -> dict:
-        query_params = dict(query)
-        query_params["format"] = "json"
-        response = requests.get(f"{self.endpoint}/api/books", params=query_params)
+    def search_books(self, query: dict) -> dict:
+        query = dict(query)
+        query["format"] = "json"
+        response = requests.get(f"{self.endpoint}/api/books", params=query)
         if not response.ok:
             raise OpenLibraryAPIError
         return response.json()
