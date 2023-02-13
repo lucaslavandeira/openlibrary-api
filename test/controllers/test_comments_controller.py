@@ -58,7 +58,30 @@ def test_list_comments_of_book_with_no_comments(test_client, book):
 
 
 def test_edit_comment(test_client, book, comment):
-    response = test_client.patch(f"/books/{book.id}/comments/{comment['id']}", json={"content": "Test content 2"})
+    response = test_client.patch(
+        f"/books/{book.id}/comments/{comment['id']}", json={"content": "Test content 2"}
+    )
     assert response.status_code == 200
-    updated_comment = test_client.get(f"/books/{book.id}/comments/{comment['id']}").json()
-    assert updated_comment['content'] == 'Test content 2'
+    updated_comment = test_client.get(
+        f"/books/{book.id}/comments/{comment['id']}"
+    ).json()
+    assert updated_comment["content"] == "Test content 2"
+
+
+def test_edit_comment_404(test_client, book):
+    invalid_comment_id = 0
+    response = test_client.patch(
+        f"/books/{book.id}/comments/{invalid_comment_id}",
+        json={"content": "Test content 2"},
+    )
+    assert response.status_code == 404
+
+
+def test_edit_comment_404_book(test_client):
+    invalid_comment_id = 0
+    invalid_book_id = 0
+    response = test_client.patch(
+        f"/books/{invalid_book_id}/comments/{invalid_comment_id}",
+        json={"content": "Test content 2"},
+    )
+    assert response.status_code == 404

@@ -50,3 +50,6 @@ def edit_comment(book_id: int, comment_id: int, comment: Comment, response: Resp
     except BookNotFoundError:
         response.status_code = 404
         return {"error": "Book not found"}
+    except CommentNotFoundError:
+        response.status_code = 404
+        return {"error": "Book not found"}
