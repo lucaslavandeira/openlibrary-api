@@ -3,6 +3,8 @@ from src.repositories.books import BookRepository
 from src.repositories.comments import Comment, CommentRepository
 from src.errors import BookNotFoundError
 
+from src import config
+
 
 class CommentsService:
     def __init__(self) -> None:
@@ -38,7 +40,7 @@ class CommentsService:
         if not self.comment_repository.delete(comment):
             raise CommentNotFoundError
 
-    def list_for_book(self, book_id, offset=0, limit=10):
+    def list_for_book(self, book_id, offset=0, limit=config.PAGINATION_DEFAULT_LIMIT):
         book = self.book_repository.get(book_id)
         if book is None:
             raise BookNotFoundError

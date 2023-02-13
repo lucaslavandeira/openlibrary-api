@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 
 from src.repositories.database import Base, SessionFactory
-from iso8601 import iso8601
+from src import config
 
 
 class Comment(Base):
@@ -62,7 +62,7 @@ class CommentRepository:
         results = session.execute(select(Comment).where(Comment.book == book.id)).all()
         return [x[0] for x in results]
 
-    def list_for_book(self, book, offset=0, limit=10):
+    def list_for_book(self, book, offset=0, limit=config.PAGINATION_DEFAULT_LIMIT):
         session = self.session_factory.get()
         results = session.execute(
             select(Comment)

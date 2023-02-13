@@ -2,11 +2,12 @@ import requests
 
 from src.errors import BookNotFoundError
 from src.repositories.books import Book
+from src import config
 
 
 class OpenLibraryProvider:
-    def __init__(self, endpoint) -> None:
-        self.endpoint = endpoint
+    def __init__(self, endpoint=None) -> None:
+        self.endpoint = endpoint or config.OPEN_LIBRARY_PROVIDER_ENDPOINT
 
     def get_book_by_isbn(self, isbn):
         url = f"{self.endpoint}/isbn/{isbn}.json"

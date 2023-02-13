@@ -4,11 +4,9 @@ from ..repositories.books import BookRepository
 
 
 class BooksService:
-    endpoint = "https://openlibrary.org/"
-
     def __init__(self) -> None:
         self.repository = BookRepository()
-        self.provider = OpenLibraryProvider(self.endpoint)
+        self.provider = OpenLibraryProvider()
 
     def get(self, isbn):
         return self.provider.get_book_by_isbn(isbn)
