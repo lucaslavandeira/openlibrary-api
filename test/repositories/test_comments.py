@@ -52,5 +52,12 @@ def test_delete_comment(book, comment_repository):
     comment_repository.add(comment)
     assert len(comment_repository.get_all_for_book(book)) == 1
 
-    comment_repository.delete(comment)
+    count = comment_repository.delete(comment)
+    assert count == 1
     assert len(comment_repository.get_all_for_book(book)) == 0
+
+
+def test_attempt_delete_of_non_existing_comment_returns_0(comment_repository):
+    comment = Comment(id=0)
+    count = comment_repository.delete(comment)
+    assert count == 0

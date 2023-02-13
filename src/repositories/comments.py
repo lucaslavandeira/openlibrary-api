@@ -52,8 +52,9 @@ class CommentRepository:
 
     def delete(self, comment):
         session = self.session_factory.get()
-        session.execute(delete(Comment).where(Comment.id == comment.id))
+        result = session.execute(delete(Comment).where(Comment.id == comment.id))
         session.commit()
+        return result.rowcount
 
     def get_all_for_book(self, book):
         session = self.session_factory.get()
