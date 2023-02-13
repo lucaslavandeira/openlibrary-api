@@ -1,7 +1,7 @@
 from datetime import datetime
 from src.repositories.books import BookRepository
 from src.repositories.comments import Comment, CommentRepository
-from src.services.books_service import BookNotFoundError
+from src.errors import BookNotFoundError
 
 
 class CommentsService:

@@ -1,7 +1,7 @@
 from pytest import fixture
-from src.services.books_service import BookNotFoundError
+from src.errors import BookNotFoundError
 
-from src.services.comments_service import CommentNotFoundError, CommentsService
+from src.services.comments_service import CommentNotFoundError
 
 
 def test_add_comment(book, comments_service, comment_repository):

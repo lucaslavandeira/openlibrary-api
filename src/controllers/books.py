@@ -1,7 +1,8 @@
 from typing import Union
-from fastapi import APIRouter, HTTPException, Response, Request
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
-from src.services.books_service import BookNotFoundError, BooksService
+from src.errors import BookNotFoundError
+from src.services.books_service import BooksService
 
 router = APIRouter()
 

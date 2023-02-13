@@ -1,7 +1,6 @@
-import requests
+from src.providers.openlibrary_provider import OpenLibraryProvider
 
-from ..repositories.books import BookRepository, Book
-from ..repositories.database import SessionFactory
+from ..repositories.books import BookRepository
 
 
 class BooksService:
@@ -9,17 +8,10 @@ class BooksService:
 
     def __init__(self) -> None:
         self.repository = BookRepository()
+        self.provider = OpenLibraryProvider(self.endpoint)
 
     def get(self, isbn):
-        url = f"{self.endpoint}/isbn/{isbn}.json"
-        response = requests.get(url)
-        if response.status_code == 404:
-            raise BookNotFoundError
-        book_data = response.json()
-        book = Book(
-            isbn=isbn, title=book_data["title"], author=book_data["authors"][0]["key"]
-        )
-        return book
+        return self.provider.get_book_by_isbn(isbn)
 
     def save(self, isbn):
         book = self.get(isbn)
@@ -29,13 +21,5 @@ class BooksService:
         return book_response
 
     def search(self, params):
-        query_params = dict(params)
-        query_params["format"] = "json"
-        response = requests.get(f"{self.endpoint}/api/books", params=query_params)
-        if response.status_code != 200:
-            raise RuntimeError
-        return {"result": response.json()}
-
-
-class BookNotFoundError(ValueError):
-    pass
+        response = self.provider.search_books(params)
+        return {"result": response}
