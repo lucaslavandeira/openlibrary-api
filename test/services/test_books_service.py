@@ -5,7 +5,7 @@ from src.repositories.books import Book
 from src.services.books_service import BooksService
 
 
-def test_get_ok(books_service: BooksService, isbn, mock_provider):
+def test_get_ok(mock_provider, books_service: BooksService, isbn):
     mock_provider.get_book_by_isbn.return_value = Book(
         isbn=isbn, title="Test title", author="Test author"
     )
@@ -14,7 +14,7 @@ def test_get_ok(books_service: BooksService, isbn, mock_provider):
     assert response.author
 
 
-def test_404(books_service, mock_provider):
+def test_404(mock_provider, books_service):
     mock_provider.get_book_by_isbn.side_effect = BookNotFoundError
     invalid_isbn = 123213
     exception_thrown = False
@@ -26,7 +26,7 @@ def test_404(books_service, mock_provider):
     assert exception_thrown
 
 
-def test_persist(books_service: BooksService, isbn, book_repository, mock_provider):
+def test_persist(mock_provider, books_service: BooksService, isbn, book_repository):
     mock_provider.get_book_by_isbn.return_value = Book(
         isbn=isbn, title="Test title", author="Test author"
     )
@@ -37,7 +37,7 @@ def test_persist(books_service: BooksService, isbn, book_repository, mock_provid
     assert book["isbn"] == book_from_database.isbn
 
 
-def test_search_returns_the_api_response_directly(books_service, isbn, mock_provider):
+def test_search_returns_the_api_response_directly(mock_provider, books_service, isbn):
     mock_provider.search_books.return_value = {}
 
     search_result = books_service.search({"isbn": isbn})
