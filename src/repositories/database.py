@@ -9,6 +9,8 @@ Base = declarative_base()
 
 class SessionFactory:
     def __init__(self) -> None:
+        if config.DATABASE_URL is None:
+            raise ValueError("DATABASE_URL is not set")
         self.engine = create_engine(config.DATABASE_URL)
         Base.metadata.create_all(self.engine)
         self.sessionmaker = sessionmaker(bind=self.engine)
