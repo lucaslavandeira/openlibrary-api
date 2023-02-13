@@ -47,15 +47,15 @@ def test_update_non_existing_comment(book, comments_service):
 
 def test_delete_comment(book, comments_service, comment_repository):
     comment = comments_service.add(book.id, "Test comment")
-    comments_service.delete(comment["id"])
+    comments_service.delete(book.id, comment["id"])
     assert comment_repository.get(comment["id"]) is None
 
 
-def test_delete_comment_that_does_not_exist_raises_error(comments_service):
+def test_delete_comment_that_does_not_exist_raises_error(book, comments_service):
     exception_thrown = False
     invalid_comment_id = 0
     try:
-        comments_service.delete(invalid_comment_id)
+        comments_service.delete(book.id, invalid_comment_id)
     except CommentNotFoundError:
         exception_thrown = True
     assert exception_thrown

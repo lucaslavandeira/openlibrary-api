@@ -29,7 +29,11 @@ class CommentsService:
         if not count:
             raise CommentNotFoundError
 
-    def delete(self, comment_id):
+    def delete(self, book_id, comment_id):
+        book = self.book_repository.get(book_id)
+        if book is None:
+            raise BookNotFoundError
+
         comment = Comment(id=comment_id)
         if not self.comment_repository.delete(comment):
             raise CommentNotFoundError

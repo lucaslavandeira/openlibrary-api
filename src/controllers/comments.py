@@ -15,12 +15,11 @@ class Comment(BaseModel):
     content: str
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 def add_comment(book_id: int, comment: Comment, response: Response):
     if not comment:
         response.status_code = 400
         return {"error": "Content not supplied"}
-    response.status_code = 201
     return CommentsService().add(book_id, comment.content)
 
 
@@ -53,3 +52,15 @@ def edit_comment(book_id: int, comment_id: int, comment: Comment, response: Resp
     except CommentNotFoundError:
         response.status_code = 404
         return {"error": "Book not found"}
+
+
+@router.delete("/{comment_id}", status_code=204)
+def delete(book_id: int, comment_id: int, response: Response):
+    try:
+        return CommentsService().delete(book_id, comment_id)
+    except BookNotFoundError:
+        response.status_code = 404
+        return {"error": "Book not found"}
+    except CommentNotFoundError:
+        response.status_code = 404
+        return {"error": "Comment not found"}

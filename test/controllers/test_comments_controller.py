@@ -85,3 +85,28 @@ def test_edit_comment_404_book(test_client):
         json={"content": "Test content 2"},
     )
     assert response.status_code == 404
+
+
+def test_delete_comment(test_client, book, comment):
+    response = test_client.delete(f"/books/{book.id}/comments/{comment['id']}")
+
+    assert response.status_code == 204
+    comment = test_client.get(f"/books/{book.id}/comments/{comment['id']}")
+    assert comment.status_code == 404
+
+
+def test_delete_comment_404(test_client, book):
+    invalid_comment_id = 0
+    response = test_client.delete(f"/books/{book.id}/comments/{invalid_comment_id}")
+
+    assert response.status_code == 404
+
+
+def test_delete_comment_book(test_client):
+    invalid_comment_id = 0
+    invalid_book_id = 0
+    response = test_client.delete(
+        f"/books/{invalid_book_id}/comments/{invalid_comment_id}"
+    )
+
+    assert response.status_code == 404
