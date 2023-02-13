@@ -13,8 +13,15 @@ class CommentsService:
         book = self.book_repository.get(book_id)
         if book is None:
             raise BookNotFoundError
-        comment = Comment(book=book.id, content=content, created_at=datetime.now())
-        return self.comment_repository.add(comment)
+        created_at = datetime.now()
+        comment = Comment(book=book.id, content=content, created_at=created_at)
+        comment_id = self.comment_repository.add(comment)
+        return {
+            "id": comment_id,
+            "content": content,
+            "book_id": book_id,
+            "created_id": created_at,
+        }
 
     def update(self, comment_id, new_content):
         count = self.comment_repository.update_content(comment_id, new_content)
