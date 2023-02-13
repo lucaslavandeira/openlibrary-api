@@ -30,5 +30,10 @@ def get_comments(book_id):
 
 
 @router.get("/{comment_id}")
-def get(book_id: int, comment_id: int):
-    return CommentsService().get(book_id, comment_id)
+def get(book_id: int, comment_id: int, response: Response):
+    comment = CommentsService().get(book_id, comment_id)
+    if comment is None:
+        response.status_code = 404
+        return {"error": "Comment not found"}
+
+    return comment
