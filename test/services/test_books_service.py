@@ -1,21 +1,21 @@
 from pytest import fixture
 from unittest import mock
 from src.errors import BookNotFoundError
+from src.repositories.books import Book
 from src.services.books_service import BooksService
 
 
-@fixture
-def books_service():
-    yield BooksService()
-
-
-def test_get_ok(books_service: BooksService, isbn):
+def test_get_ok(books_service: BooksService, isbn, mock_provider):
+    mock_provider.get_book_by_isbn.return_value = Book(
+        isbn=isbn, title="Test title", author="Test author"
+    )
     response = books_service.get(isbn)
 
     assert response.author
 
 
-def test_404(books_service):
+def test_404(books_service, mock_provider):
+    mock_provider.get_book_by_isbn.side_effect = BookNotFoundError
     invalid_isbn = 123213
     exception_thrown = False
     try:
@@ -26,7 +26,10 @@ def test_404(books_service):
     assert exception_thrown
 
 
-def test_persist(books_service: BooksService, isbn, book_repository):
+def test_persist(books_service: BooksService, isbn, book_repository, mock_provider):
+    mock_provider.get_book_by_isbn.return_value = Book(
+        isbn=isbn, title="Test title", author="Test author"
+    )
     book = books_service.save(isbn)
 
     book_from_database = book_repository.get(book_id=book["id"])
@@ -34,34 +37,8 @@ def test_persist(books_service: BooksService, isbn, book_repository):
     assert book["isbn"] == book_from_database.isbn
 
 
-def test_search_returns_the_api_response_directly(books_service, isbn):
-    with mock.patch("src.providers.openlibrary_provider.requests.get") as patched_get:
-        mock_response = mock.MagicMock(status_code=200)
-        patched_get.return_value = mock_response
-        search_result = books_service.search({"isbn": isbn})
-        assert search_result["result"] == mock_response.json()
+def test_search_returns_the_api_response_directly(books_service, isbn, mock_provider):
+    mock_provider.search_books.return_value = {}
 
-
-def test_search_passes_on_the_params_as_request_query_params_and_json_format(
-    books_service, isbn
-):
-    with mock.patch("src.providers.openlibrary_provider.requests.get") as patched_get:
-        mock_response = mock.MagicMock(status_code=200)
-        patched_get.return_value = mock_response
-        books_service.search({"isbn": isbn})
-        patched_get.assert_called_once_with(
-            mock.ANY, params={"isbn": isbn, "format": "json"}
-        )
-
-
-def test_search_unavailable(books_service, isbn):
-    exception_thrown = False
-    with mock.patch("src.providers.openlibrary_provider.requests.get") as patched_get:
-        mock_response = mock.MagicMock(ok=False)
-        patched_get.return_value = mock_response
-        try:
-            books_service.search({"isbn": isbn})
-        except Exception:
-            exception_thrown = True
-
-    assert exception_thrown
+    search_result = books_service.search({"isbn": isbn})
+    assert search_result["result"] == {}

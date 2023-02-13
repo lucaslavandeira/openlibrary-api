@@ -7,6 +7,7 @@ from src.providers.openlibrary_provider import OpenLibraryProvider
 from src.repositories.books import Book, BookRepository
 from src.repositories.comments import CommentRepository
 from src.repositories.database import SessionFactory
+from src.services.books_service import BooksService
 from src.services.comments_service import CommentsService
 
 
@@ -67,3 +68,8 @@ def mock_provider():
         return_value=mock.MagicMock(OpenLibraryProvider),
     ) as m:
         yield m()
+
+
+@fixture
+def books_service():
+    yield BooksService()
